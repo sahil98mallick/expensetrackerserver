@@ -533,4 +533,33 @@ router.get('/allusers', ((req, res, next) => {
         })
 }))
 
+// Update Users Active Status Details
+router.put('/updateuseractivestatus/:id', (req, res) => {
+    const updateactiveData = {
+        activestatus: req.body.activestatus,
+    };
+
+    ExpenseTrackerUsers.findByIdAndUpdate(req.params.id, updateactiveData, { new: true })
+        .then(updatedUser => {
+            if (!updatedUser) {
+                return res.status(404).json({
+                    status: false,
+                    message: "User is not Active or No Changes Found",
+                });
+            }
+            res.status(200).json({
+                status: true,
+                message: "Status Updated Successfully",
+                updatedactiveuser: updatedUser
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err,
+                status: false,
+                message: "Failed to Update",
+            });
+        });
+});
 module.exports = router
